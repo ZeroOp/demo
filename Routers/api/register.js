@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mysql = require('../../database');
+const mail = require('../../mail');
 router.post('/' , (req,res)=>{
     // console.log(req.body);
     const username  = req.body.username , email = req.body.email , pass = req.body.password;
@@ -15,13 +16,17 @@ router.post('/' , (req,res)=>{
                 return res.send('emailExt');
             }
             sql = `insert into users (username , password ,email) values("${username}" , "${pass}" , "${email}")`;
-            mysql.query(sql , (err,user)=>{
+            mysql.query(sql ,async (err,user)=>{
                 req.session.user ={
                     user_id:user.insertId,
                     username:username,
                     email:email
                 }
-                console.log(req.session.user);
+                var text = `
+                'Your Registration has been successfull . Welcome to Red Store. 
+                 continue Shoping.... https://redstore1.herokuapp.com/ 
+                `
+                await mail(email,'Welcom to RedStore',text);
                 return res.send("success");
             })
         })

@@ -3,7 +3,7 @@ const generateHash = require('../generateHash');
 const middleware = require('../middleware');
 const mysql = require('../database');
 const router = express.Router();
-
+const mail = require('../mail');
 router.get('/' , middleware , (req,res,next)=>{
     res.render('Transaction');
 })
@@ -23,6 +23,12 @@ router.post('/' , (req,res)=>{
         var Shipping_Add = `${data. street_address} , ${data.city} , ${data.postcode}`;
         sql = `insert into order_info values("${order_id}" , "${transaction_id}" , ${total_price}, ${user_id},"${Shipping_Add}","${new Date().toISOString().slice(0, 19).replace('T', ' ')}" , "ACTIVE" , "${name}")`;
         mysql.query(sql); // here we are creating the new order info
+        var text = `
+    Your Order Placed Successfully. 
+Order Id ${order_id} and Transaction Id is ${transaction_id}.
+        `
+        mail(req.session.user.email , 'Order Placed' , text);
+
         cart.forEach((item)=>{
             sql = `insert into order_items values("${order_id}" , ${item.p_id} ,${item.p_price} ,"${item.p_name}", ${item.qty})`;
             mysql.query(sql);
