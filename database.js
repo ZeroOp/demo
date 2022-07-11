@@ -4,8 +4,8 @@ const conn = mysql.createConnection(
         // 
         host:"database-2.cjqpyslxmtms.us-west-2.rds.amazonaws.com",
         port:"3306",
-        user:"Zeroop",
-        password:"Zeroop@123",
+        user:"admin",
+        password:"zeroop123",
         database:"RedStore"
     }
 )
